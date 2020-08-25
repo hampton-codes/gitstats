@@ -3,7 +3,7 @@
 gitstats grabs interesting statistics from all projects in the organization
 
 ## Example Output
-![Example screenshot][sample_output.png]
+![Example screenshot](sample_output.png)
 
 ## Installation
 
