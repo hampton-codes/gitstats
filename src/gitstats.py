@@ -12,6 +12,7 @@ GIT_BASE_URL = 'https://api.github.com'
 # Get data from repository
 def handle_repository(rep, headers, fields, ignore_languages):
     data = {}
+    csv_data = {}
 
     url = f'{GIT_BASE_URL}/repos/{rep}'
     try:
@@ -24,14 +25,16 @@ def handle_repository(rep, headers, fields, ignore_languages):
                     drill_down = field.split('.')
                     data[drill_down[0]] = {}
                     data[drill_down[0]][drill_down[1]] = json_data[drill_down[0]][drill_down[1]]
+                    csv_data[field] = json_data[drill_down[0]][drill_down[1]]
                 else:
                     data[field] = json_data[field]
+                    csv_data[field] = json_data[field]
         else:
             logger.warn(f'Hmm... non HTTP 200/OK code received')
             logger.warn(f'    URL: {url}')
             logger.warn(f'    Status code: {r.status_code}')
             logger.warn(f'    Response: {r.text}')
-            return data
+            return data, csv_data
     except Exception as e:
         logger.error(f'Error making call to github! {url}')
         logger.exception(e)
@@ -45,17 +48,18 @@ def handle_repository(rep, headers, fields, ignore_languages):
                 json_data = json.loads(r.text)
                 for key in json_data.keys():
                     data['languages'][key] = json_data[key]
+                    csv_data[f'languages.{key}'] = json_data[key]
             else:
                 logger.warn(f'Hmm... non HTTP 200/OK code received')
                 logger.warn(f'    URL: {url}')
                 logger.warn(f'    Status code: {r.status_code}')
                 logger.warn(f'    Response: {r.text}')
-                return data
+                return data, csv_data
         except Exception as e:
             logger.error(f'Error making call to github! {url}')
             logger.exception(e)
     
-    return data
+    return data, csv_data
 
 # Do work
 def main(args):
@@ -89,8 +93,16 @@ def main(args):
     
     # Handle individual repository
     if args.repository:
-        data = handle_repository(args.repository, headers, fields, args.nolanguages)
-        if data:
+        data, csv_data = handle_repository(args.repository, headers, fields, args.nolanguages)
+        if csv_data and args.mode == "csv":
+            line = ''
+            header_line = ''
+            for key in csv_data.keys():
+                header_line = f'{header_line},{key}'
+                line = f'{line},{csv_data[key]}'
+            print(header_line[1:])
+            print(line[1:])
+        else:
             print(json.dumps(data, indent=4))
     elif args.organization:
         print("Organization scan coming soon!")
@@ -111,6 +123,8 @@ if __name__ == '__main__':
         help="github org (eg: --org=hampton-codes)")
     parser.add_argument("-nl", "--nolanguages",
         help="collect language stats", action="store_true")
+    parser.add_argument("-m", "--mode", default="json",
+        help="output format. Values: (json|csv)")
     args = parser.parse_args()
     
     # Do work
