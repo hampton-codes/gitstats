@@ -24,7 +24,7 @@ Copy `conf/gitstats.ini.example` as `conf/gitstats.ini` and add your configurati
 cd src
 python3 gitstats.py -h
 usage: gitstats.py [-h] [-c CONFIG] [-r REPOSITORY] [-f FIELDS]
-                   [-o ORGANIZATION] [-nl] [-m MODE]
+                   [-o ORGANIZATION] [-u USER] [-nl] [-m MODE]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -38,7 +38,8 @@ optional arguments:
                         fields to collect. comma-separated. (eg:
                         --fields=name,owner.type)
   -o ORGANIZATION, --organization ORGANIZATION
-                        github org (eg: --org=hampton-codes)
-  -nl, --nolanguages    do not collect language stats
+                        all github org repos (eg: --org=hampton-codes)
+  -u USER, --user USER  all github user repos (eg: --user=hampton-codes)
+  -nl, --nolanguages    collect language stats
   -m MODE, --mode MODE  output format. Values: (json|csv)
 ```
