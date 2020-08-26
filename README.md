@@ -39,6 +39,6 @@ optional arguments:
                         --fields=name,owner.type)
   -o ORGANIZATION, --organization ORGANIZATION
                         github org (eg: --org=hampton-codes)
-  -nl, --nolanguages    collect language stats
+  -nl, --nolanguages    do not collect language stats
   -m MODE, --mode MODE  output format. Values: (json|csv)
 ```
