@@ -40,6 +40,6 @@ optional arguments:
   -o ORGANIZATION, --organization ORGANIZATION
                         all github org repos (eg: --org=hampton-codes)
   -u USER, --user USER  all github user repos (eg: --user=hampton-codes)
-  -nl, --nolanguages    collect language stats
+  -nl, --nolanguages    do not collect language stats
   -m MODE, --mode MODE  output format. Values: (json|csv)
 ```

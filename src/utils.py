@@ -33,20 +33,25 @@ def json_to_csv(json_data, fields):
                 field_list.add(f'languages.{key}')
         output.append(element)
     header_line = ''
-    for field in field_list:
+    for field in sorted(field_list):
         header_line = f'{header_line},{field}'
     ret_data.append(header_line[1:])
     for out in output:
         line = ''
-        for field in field_list:
-            line = f'{line},{out[field]}'
+        for field in sorted(field_list):
+            if field in out.keys():
+                line = f'{line},{out[field]}'
+            else:
+                line = f'{line},0'
         ret_data.append(line[1:])
+    return ret_data
 
 # print data
 def print_output(data, fields, mode):
     if not data:
         return
     if mode == "csv":
-        print(json_to_csv(data, fields))
+        for line in json_to_csv(data, fields):
+            print(line)
     else:
         print(json.dumps(data, indent=4))
