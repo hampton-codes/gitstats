@@ -16,7 +16,7 @@ BUCKETS = [
     (0,366)
 ]
 
-def get_stats(f):
+def get_stats(f, org):
     df = pd.read_csv(f)
     now = datetime.datetime.now()
     df['created_at_dt'] = pd.to_datetime(df['created_at'], format='%Y-%m-%dT%H:%M:%SZ')
@@ -43,7 +43,7 @@ def get_stats(f):
     df2 = pd.read_csv(StringIO('\n'.join(x_langs_csv)))
     ax = df2[['language', 'count']].plot(kind='bar', x='language', y='count', legend=True, title=f'Top {TOP_LANGS} Languages in use', figsize=(11,8))
     fig = ax.get_figure()
-    top_languages_plot_file = f'/tmp/plot-top{TOP_LANGS}langs-{now.strftime("%Y%m%d")}.pdf'
+    top_languages_plot_file = f'/tmp/{org}-plot-top{TOP_LANGS}langs-{now.strftime("%Y%m%d")}.pdf'
     fig.savefig(top_languages_plot_file)
     
     # Prepare age_buckets
@@ -80,7 +80,7 @@ def get_stats(f):
     df2 = pd.read_csv(StringIO('\n'.join(age_buckets_csv)))
     ax = df2[['days_since_last_update', 'count']].plot(kind='bar', x='days_since_last_update', y='count', legend=True, title='Repositories by age', figsize=(11,8))
     fig = ax.get_figure()
-    file_name = f'/tmp/plot-{now.strftime("%Y%m%d")}.pdf'
+    file_name = f'/tmp/{org}-plot-{now.strftime("%Y%m%d")}.pdf'
     fig.savefig(file_name)
     
     data = {

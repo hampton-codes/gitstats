@@ -102,15 +102,14 @@ def handle_organization(org, headers, fields, ignore_languages, user_repos=False
                 else:
                     url = None
             elif r.status_code == 403:
-                utcnow = datetime.datetime.utcnow().strftime('%s')
                 reset_timestamp = r.headers.get('X-RateLimit-Reset')
-                time_left = int(reset_timestamp) - int(utcnow)
-                logger.debug(f'X-RateLimit-Reset: {reset_timestamp}')
-                reset_time = datetime.datetime.utcfromtimestamp(reset_timestamp).strftime('%Y-%m-%d %H:%M:%S UTC')
+                reset_time = datetime.datetime.utcfromtimestamp(int(reset_timestamp)).strftime('%Y-%m-%d %H:%M:%S UTC')
             
                 logger.warn('Hmm... HTTP 403/Forbidden. Bad token or rate limit?!')
+                logger.warn(f'    Status code: {r.status_code}')
+                logger.warn(f'    Response: {r.text}')
                 logger.warn(f'    Rate limit remaining {r.headers.get("X-RateLimit-Remaining")} of {r.headers.get("X-RateLimit-Limit")}')
-                logger.warn(f'    Will reset at {reset_time}. In about {time_left} seconds')
+                logger.warn(f'    Will reset at {reset_time}')
                 if(int(r.headers.get("X-RateLimit-Remaining")) == 0):
                     time.sleep(SLEEP_TIME)
                 else:

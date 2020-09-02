@@ -39,22 +39,27 @@ def main(args):
         sys.exit(2)
     
     # Assemble the data
+    org = args.repository
     data = []
     if args.repository:
         data = [handle_repository(args.repository, headers, fields, args.nolanguages)]
     elif args.organization:
+        org = args.organization
         data = handle_organization(args.organization, headers, fields, args.nolanguages)
     elif args.user:
+        org = args.user
         data = handle_organization(args.user, headers, fields, args.nolanguages, user_repos=True)
     else:
         print("Yay.... No work to do!")
         print("To exercise me specify either repository or organization to scan.")
+        return
     
-    # Output the data
-    # print_output(data, fields, args.mode)
+    if data:
+        # Output the data
+        print_output(data, fields, args.mode, org)
     
-    # Analyze the data
-    print(json.dumps(get_stats(get_csv_data_as_file(data, fields)), indent=4))
+        # Analyze the data
+        print(json.dumps(get_stats(get_csv_data_as_file(data, fields), org), indent=4))
 
 if __name__ == '__main__':
     # Setup CLI options

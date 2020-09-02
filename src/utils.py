@@ -1,5 +1,6 @@
 import json
 import logging
+import datetime
 from io import StringIO
 
 # Setup logging
@@ -48,14 +49,22 @@ def json_to_csv(json_data, fields):
     return ret_data
 
 # print data
-def print_output(data, fields, mode):
+def print_output(data, fields, mode, org):
     if not data:
         return
+    now = datetime.datetime.now().strftime('%Y%m%d')
+    file_name = f'/tmp/{org}-{now}'
     if mode == "csv":
-        for line in json_to_csv(data, fields):
-            print(line)
+        file_name = f'{file_name}.csv'
+        with open(file_name, 'w') as f:
+            for line in json_to_csv(data, fields):
+                # print(line)
+                f.write(line + '\n')
     else:
-        print(json.dumps(data, indent=4))
+        file_name = f'{file_name}.json'
+        with open(file_name, 'w') as f:
+            # print(json.dumps(data, indent=4))
+            json.dump(data, f, indent=4)
 
 def get_csv_data_as_file(data, fields):
     f = StringIO('\n'.join(json_to_csv(data, fields)))
