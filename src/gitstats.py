@@ -4,8 +4,9 @@ import argparse
 
 # Local file imports
 import configreader
-from utils import logger, print_output
+from utils import logger, print_output, get_csv_data_as_file
 from git import handle_repository, handle_organization
+from analyze import get_stats
 
 # Do work
 def main(args):
@@ -50,7 +51,10 @@ def main(args):
         print("To exercise me specify either repository or organization to scan.")
     
     # Output the data
-    print_output(data, fields, args.mode)
+    # print_output(data, fields, args.mode)
+    
+    # Analyze the data
+    print(json.dumps(get_stats(get_csv_data_as_file(data, fields)), indent=4))
 
 if __name__ == '__main__':
     # Setup CLI options

@@ -1,5 +1,6 @@
 import json
 import logging
+from io import StringIO
 
 # Setup logging
 logger = logging.getLogger('gitstats')
@@ -55,3 +56,7 @@ def print_output(data, fields, mode):
             print(line)
     else:
         print(json.dumps(data, indent=4))
+
+def get_csv_data_as_file(data, fields):
+    f = StringIO('\n'.join(json_to_csv(data, fields)))
+    return f
